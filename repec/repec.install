@@ -1,0 +1,69 @@
+<?php
+/**
+ * @file
+ * Installation actions for Lusk RePEc
+ */
+
+/**
+ * Implement hook_schema().
+ */
+function repec_schema() {
+
+  $schema['repec_assoc'] = array(
+    'fields' => array(
+      'content_type' => array(
+        'type' => 'varchar',
+        'not null' => true,
+        'length' => 32
+      ),
+      'series_name' => array(
+        'type' => 'varchar',
+        'not null' => true,
+        'length' => 32
+      ),
+      'field_content_type' => array(
+        'type' => 'varchar',
+        'length' => 32,
+        'not null' => true,
+      ),
+      'field_series' => array(
+        'type' => 'varchar',
+        'length' => 32,
+        'not null' => true,
+      ),
+      'enabled' => array(
+        'type' => 'int',
+        'unsigned' => true,
+      ),
+    ),
+    'primary key' => array('content_type', 'series_name', 'field_content_type', 'field_series')
+  );
+
+  return $schema;
+}
+
+/**
+ * Implements hook_install().
+ */
+function repec_install() {
+  variable_set('repec_base_path', variable_get('file_public_path', conf_path() . '/files') . '/RePEc');
+}
+
+/**
+ * Implements hook_uninstall().
+ */
+function repec_uninstall() {
+  // Variable cleanup.
+  variable_del('repec_archive_code');
+  variable_del('repec_base_path');
+  variable_del('repec_provider_name');
+  variable_del('repec_provider_homepage');
+  variable_del('repec_provider_institution');
+  variable_del('repec_maintainer_name');
+  variable_del('repec_maintainer_email');
+  variable_del('repec_series_name');
+  variable_del('repec_paper_dir');
+  variable_del('repec_paper_name');
+  variable_del('repec_check_delimiters');
+  variable_del('repec_paper_content_type');
+}

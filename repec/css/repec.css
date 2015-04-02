@@ -1,0 +1,42 @@
+
+.new_item {
+  clear: left;
+}
+
+.button_remove {
+  display: block;
+  margin-top: 9px;
+  float: left;
+}
+
+.select_content_type {
+  width: auto;
+  margin-right: 20px;
+  float: left;
+}
+
+.select_series_fields {
+  width: auto;
+  margin-right: 20px;
+  float: left;
+  clear: left;
+}
+
+.check_delimiters {
+  margin-top: 13px;
+}
+
+.button_add {
+  display: block; margin-top: 9px;
+}
+
+.new_field {
+  width: auto;
+  margin-right: 20px;
+  float: left;
+}
+
+#edit-field-association,
+#field_association_fieldset {
+  background-color: white;
+}

@@ -1,0 +1,5 @@
+name = "RePEc"
+description = "Integrating Working Papers with RePEc."
+core = 7.x
+package = "RePEc"
+configure = admin/config/services/repec
