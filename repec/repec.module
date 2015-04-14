@@ -8,7 +8,9 @@
 /**
  * Implements hook_node_insert().
  */
-// This function generates the template file for the node.
+/**
+ * This function generates the template file for the node.
+ */
 function repec_node_insert($node) {
   module_load_include('inc', 'repec', 'repec_aux');
   // This function is called in repec_aux
@@ -18,7 +20,9 @@ function repec_node_insert($node) {
 /**
  * Implements hook_node_update().
  */
-// It updates the template file for the node.
+/**
+ * It updates the template file for the node.
+ */ 
 function repec_node_update($node) {
   module_load_include('inc', 'repec', 'repec_aux');
   // This function is called in repec_aux
@@ -28,7 +32,10 @@ function repec_node_update($node) {
 /**
  * Implements hook_node_delete().
  */
-// It removes the template file for the node. It's not automatically removed from RePEc repository.
+/**
+ * It removes the template file for the node.
+ * It's not automatically removed from RePEc repository.
+ */
 function repec_node_delete($node) {
   module_load_include('inc', 'repec', 'repec_aux');
   repec_remove_paper_template($node);
@@ -253,7 +260,8 @@ function repec_ajax_fieldset_association($form, &$form_state) {
 }
 
 /**
- * This function associates the fields, triggered by checked content type radiobutton.
+ * This function associates the fields,
+ * triggered by checked content type radiobutton.
  */
 function repec_associate_fields($form_state) {
   if (!empty($form_state['triggering_element']) && $form_state['triggering_element']['#id'] == 'add_button') {
@@ -271,7 +279,8 @@ function repec_associate_fields($form_state) {
 }
 
 /**
- * This function disassociates the fields, triggered by unchecked field series checkbox and content type select box.
+ * This function disassociates the fields,
+ * triggered by unchecked field series checkbox and content type select box.
  */
 function repec_disassociate_fields($form_state) {
   if (!empty($form_state['triggering_element']) && strpos($form_state['triggering_element']['#id'], 'remove_button') !== FALSE) {
@@ -301,7 +310,7 @@ function repec_fields_association(&$form, &$form_state, $content_type) {
   $series = $form_state['values']['repec_series_name'];
   $series_fields = array();
 
-  $mapping = module_invoke_all('repec_paper_mapping', null);
+  $mapping = module_invoke_all('repec_paper_mapping', NULL);
   drupal_alter('repec_paper_mapping', $mapping, $node);
 
   foreach ($mapping as $item) {
@@ -330,7 +339,10 @@ function repec_fields_association(&$form, &$form_state, $content_type) {
     if ($field_content_type != FALSE) {
       $form['repec_series']['repec_paper']['field_association']['field_series_' . $count_series] = array(
         '#type' => 'select',
-        '#options' => array('none' => 'Select a series field', $field_name => t('!value', array('!value' => $value))),
+        '#options' => array(
+          'none' => 'Select a series field',
+          $field_name => t('!value', array('!value' => $value))
+        ),
         '#value' => $field_name,
         '#prefix' => "<div class='select_series_fields'>",
         '#suffix' => "</div>",
@@ -339,7 +351,11 @@ function repec_fields_association(&$form, &$form_state, $content_type) {
 
       $form['repec_series']['repec_paper']['field_association']['field_ct_' . $count_series] = array(
         '#type' => 'select',
-        '#options' => array('none' => 'Select a content type field', $field_content_type => t('!value', array('!value' => $ct_fields[$field_content_type]['label']))),
+        '#options' => array(
+          'none' => 'Select a content type field',
+          $field_content_type => t('!value',
+          array('!value' => $ct_fields[$field_content_type]['label']))
+        ),
         '#value' => $field_content_type,
         '#prefix' => "<div class='select_content_type'>",
         '#suffix' => "</div>",

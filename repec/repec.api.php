@@ -40,5 +40,3 @@ function repec_repec_archive_mapping() {
  */
 function repec_repec_archive_mapping_alter(&$data) {
 }
-
-
