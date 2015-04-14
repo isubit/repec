@@ -1,4 +1,6 @@
-
+/**
+ *   RePEc style.
+ */
 .new_item {
   clear: left;
 }
@@ -27,7 +29,8 @@
 }
 
 .button_add {
-  display: block; margin-top: 9px;
+  display: block;
+  margin-top: 9px;
 }
 
 .new_field {

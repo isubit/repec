@@ -19,21 +19,21 @@ function repec_create_directory() {
 
   // Remove all files of type .rdf
   $files = glob($repec_papers_path . '/*.rdf');
-  foreach ($files as $file) { // iterate files
+  foreach ($files as $file) {
     if (is_file($file)) {
-      unlink($file); // delete file
+      unlink($file);
     }
   }
 
-  // This function will generate the directory and the archive and series templates
+  // This function will generate the directory and the archive and series templates.
   repec_generate_archive_template();
   repec_generate_series_template();
 
-  // get all contents of type Working Paper
+  // Get all contents of type Working Paper.
   $type = "working_paper";
   $nodes = node_load_multiple(array(), array('type' => $type));
 
-  // save all papers again so that the files can be generated.
+  // Save all papers again so that the files can be generated.
   foreach ($nodes as $paper) {
     repec_generate_paper_template($paper);
   }
@@ -41,12 +41,12 @@ function repec_create_directory() {
 
 /**
  * Implements hook_repec_paper_mapping().
- * It maps the series fields with the node fields to generate the template file.
- * The fields displayed on the settings page come from this function.
- * To display the fields on the settings page, the field has to have the property 'visible' set to TRUE.
  */
+// It maps the series fields with the node fields to generate the template file.
+// The fields displayed on the settings page come from this function.
+// To display the fields on the settings page, the field has to have the property 'visible' set to TRUE.
 function repec_repec_paper_mapping($node) {
-  
+
   $mapping = array();
 
   $node_vars = get_object_vars($node);
@@ -58,15 +58,16 @@ function repec_repec_paper_mapping($node) {
     'value' => 'ReDIF-Paper 1.0',
   );
 
- // Title of the Article
+  // Title of the Article.
   $mapping[] = array(
     'property' => 'Title',
     'value' => isset($node->title) ? $node->title : '',
   );
 
-  $author_field = repec_get_field_content_type($content_type, $series_name, 'author');
+  $author_field = repec_get_field_content_type($content_type, $series_name, 'Author-Name');
   if (!empty($author_field) && !empty($node_vars[$author_field][LANGUAGE_NONE][0]['value'])) {
     $authors = repec_generate_array_authors($node_vars[$author_field][LANGUAGE_NONE][0]['value']);
+
     foreach ($authors as $author) {
       $mapping[] = array(
         'property' => 'Author-Name',
@@ -83,8 +84,8 @@ function repec_repec_paper_mapping($node) {
     );
   }
 
-  // Abstract of the article
-  $abstract = repec_get_field_content_type($content_type, $series_name, 'abstract');
+  // Abstract of the article.
+  $abstract = repec_get_field_content_type($content_type, $series_name, 'Abstract');
   if (!empty($abstract) && !empty($node_vars[$abstract][LANGUAGE_NONE][0]['value'])) {
     $mapping[] = array(
       'property' => 'Abstract',
@@ -100,8 +101,8 @@ function repec_repec_paper_mapping($node) {
     );
   }
 
-  // Date of the article
-  $create_date = repec_get_field_content_type($content_type, $series_name, 'create_date');
+  // Date of the article.
+  $create_date = repec_get_field_content_type($content_type, $series_name, 'Creation-Date');
   if (!empty($create_date) && !empty($node_vars[$create_date][LANGUAGE_NONE][0]['value'])) {
     $mapping[] = array(
       'property' => 'Creation-Date',
@@ -117,8 +118,8 @@ function repec_repec_paper_mapping($node) {
     );
   }
 
-  // File for the article
-  $file_url = repec_get_field_content_type($content_type, $series_name, 'file_url');
+  // File for the article.
+  $file_url = repec_get_field_content_type($content_type, $series_name, 'File-URL');
   if (!empty($file_url) && !empty($node_vars[$file_url][LANGUAGE_NONE][0]['fid'])) {
     $file_article = file_load($node_vars[$file_url][LANGUAGE_NONE][0]['fid']);
 
@@ -140,8 +141,8 @@ function repec_repec_paper_mapping($node) {
     );
   }
 
-  // Keywords
-  $key = repec_get_field_content_type($content_type, $series_name, 'keywords');
+  // Keywords.
+  $key = repec_get_field_content_type($content_type, $series_name, 'Keywords');
   if (!empty($key) && !empty($node_vars[$key][LANGUAGE_NONE])) {
     $keywords = '';
     foreach ($node_vars[$key][LANGUAGE_NONE] as $keyword) {
@@ -149,7 +150,7 @@ function repec_repec_paper_mapping($node) {
       $keywords .= $term->name . ', ';
     }
     if (strlen($keywords) > 0) {
-      $keywords = substr($keywords, 0, strlen($keywords)-2);
+      $keywords = substr($keywords, 0, strlen($keywords) - 2);
     }
 
     $mapping[] = array(
@@ -166,13 +167,13 @@ function repec_repec_paper_mapping($node) {
     );
   }
 
-  // Number or id of the Article
+  // Number or id of the Article.
   $mapping[] = array(
     'property' => 'Number',
     'value' => isset($node->nid) ? $node->nid : '',
   );
 
-    // Handle that uniquely identifies the paper.
+  // Handle that uniquely identifies the paper.
   $mapping[] = array(
     'property' => 'Handle',
     'value' => 'RePEc:' . variable_get('repec_archive_code') . ':wpaper:' . $node->nid,
@@ -181,11 +182,9 @@ function repec_repec_paper_mapping($node) {
   return $mapping;
 }
 
-/**
- * This function generates the repec template for the article.
- * Based on this url: http://ideas.repec.org/t/papertemplate.html
- * This function returns the path for the template generated
- */
+// This function generates the repec template for the article.
+// Based on this url: http://ideas.repec.org/t/papertemplate.html
+// This function returns the path for the template generated.
 function repec_generate_paper_template($node) {
   $repec_papers_path = variable_get('repec_base_path') . '/' . variable_get('repec_archive_code') . '/' . variable_get('repec_paper_dir', 'wpaper') . '/';
   $content_type = variable_get('repec_paper_content_type');
@@ -219,7 +218,7 @@ function repec_generate_paper_template($node) {
 }
 
 /**
- * Remove a template file
+ * Remove a template file.
  */
 function repec_remove_paper_template($node) {
   $repec_papers_path = variable_get('repec_base_path') . '/' . variable_get('repec_archive_code') . '/' . variable_get('repec_paper_dir', 'wpaper') . '/';
@@ -229,9 +228,9 @@ function repec_remove_paper_template($node) {
 
 /**
  * Implements hook_repec_series_mapping().
- * It maps the series attributes to the settings informed by the user to generate the series template file.
- * This runs when user saves the settings page.
  */
+// It maps the series attributes to the settings informed by the user to generate the series template file.
+// This runs when user saves the settings page.
 function repec_repec_series_mapping() {
 
   $attributes = array(
@@ -276,11 +275,9 @@ function repec_repec_series_mapping() {
   return $attributes;
 }
 
-/**
- * This function generates the repec template for the series.
- * Based on this url: http://ideas.repec.org/t/seritemplate.html
- * This function returns the path for the template generated
- */
+// This function generates the repec template for the series.
+// Based on this url: http://ideas.repec.org/t/seritemplate.html.
+// This function returns the path for the template generated.
 function repec_generate_series_template() {
   $repec_archive_path = variable_get('repec_base_path') . '/' . variable_get('repec_archive_code') . '/';
   if (!file_exists($repec_archive_path)) {
@@ -307,8 +304,8 @@ function repec_generate_series_template() {
 
 /**
  * Implements hook_repec_archive_mapping().
- * It maps the archive fields with the fields informed by the user on the settings page.
  */
+// It maps the archive fields with the fields informed by the user on the settings page.
 function repec_repec_archive_mapping() {
 
   $attributes = array(
@@ -347,9 +344,9 @@ function repec_repec_archive_mapping() {
 
 /**
  * This function generates the repec template for the series.
- * Based on this url: http://ideas.repec.org/t/archtemplate.html
- * This function returns the path for the template generated
  */
+// Based on this url: http://ideas.repec.org/t/archtemplate.html.
+// This function returns the path for the template generated.
 function repec_generate_archive_template() {
   $repec_archive_path = variable_get('repec_base_path') . '/' . variable_get('repec_archive_code') . '/';
   if (!file_exists($repec_archive_path)) {
@@ -375,39 +372,40 @@ function repec_generate_archive_template() {
 }
 
 /**
- * This generates an array of authors if they are written in a textfield separated by delimiters (and, &, ',', ';', with).
+ * This function generates an array of authors.
  */
+// Delimiters (and, &, ',', ';', with).
 function repec_generate_array_authors($authors_names) {
-  // Author Name
-  // Break by and
-  $check_delimiters = variable_get('repec_check_delimiters');
+  // Author Name.
+  // Break by and.
+  $check_delimiters = variable_get('repec_check_delimiters', 1);
   if (empty($check_delimiters) || $check_delimiters == 0) {
     return array($authors_names);
   }
 
   $authors_temp = explode(" and ", $authors_names);
 
-  // Break by &
+  // Break by &.
   $authors = array();
   foreach ($authors_temp as $a) {
     $authors = array_merge($authors, explode("&", $a));
   }
 
-  // Break by ,
+  // Break by ,.
   $authors_temp = $authors;
   $authors = array();
   foreach ($authors_temp as $a) {
     $authors = array_merge($authors, explode(",", $a));
   }
 
-  // Break by ;
+  // Break by ;.
   $authors_temp = $authors;
   $authors = array();
   foreach ($authors_temp as $a) {
     $authors = array_merge($authors, explode(";", $a));
   }
 
-  // Break by with
+  // Break by with.
   $authors_temp = $authors;
   $authors = array();
   foreach ($authors_temp as $a) {
@@ -435,7 +433,7 @@ function repec_add_association($content_type, $series_name, $field_content_type,
       'series_name' => $series_name,
       'field_content_type' => $field_content_type,
       'field_series' => $field_series,
-      'enabled' => 0
+      'enabled' => 0,
     ))
     ->execute();
 }
@@ -460,7 +458,7 @@ function repec_delete_association($content_type, $series_name, $field_content_ty
 }
 
 /**
- * Returns the associated field_series
+ * Returns the associated field_series.
  */
 function repec_get_field_series($content_type, $series_name, $field_content_type) {
   $row = db_select('repec_assoc', 'ra')
@@ -474,7 +472,7 @@ function repec_get_field_series($content_type, $series_name, $field_content_type
 }
 
 /**
- * Returns the associated field of the content type
+ * Returns the associated field of the content type.
  */
 function repec_get_field_content_type($content_type, $series_name, $field_series) {
   $row = db_select('repec_assoc', 'ra')
@@ -493,14 +491,14 @@ function repec_get_field_content_type($content_type, $series_name, $field_series
 function repec_enable_association($content_type, $series_name) {
   db_update('repec_assoc')
     ->fields(array(
-      'enabled' => 0
+      'enabled' => 0,
     ))
     ->condition('series_name', $series_name)
     ->execute();
 
   db_update('repec_assoc')
     ->fields(array(
-      'enabled' => 1
+      'enabled' => 1,
     ))
     ->condition('content_type', $content_type)
     ->condition('series_name', $series_name)

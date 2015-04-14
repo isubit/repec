@@ -1,11 +1,11 @@
 <?php
 /**
  * @file
- * Installation actions for Lusk RePEc
+ * Installation actions for Lusk RePEc.
  */
 
 /**
- * Implement hook_schema().
+ * Implements hook_schema().
  */
 function repec_schema() {
 
@@ -13,30 +13,32 @@ function repec_schema() {
     'fields' => array(
       'content_type' => array(
         'type' => 'varchar',
-        'not null' => true,
-        'length' => 32
+        'not null' => TRUE,
+        'length' => 32,
       ),
       'series_name' => array(
         'type' => 'varchar',
-        'not null' => true,
-        'length' => 32
+        'not null' => TRUE,
+        'length' => 32,
       ),
       'field_content_type' => array(
         'type' => 'varchar',
         'length' => 32,
-        'not null' => true,
+        'not null' => TRUE,
       ),
       'field_series' => array(
         'type' => 'varchar',
         'length' => 32,
-        'not null' => true,
+        'not null' => TRUE,
       ),
       'enabled' => array(
         'type' => 'int',
-        'unsigned' => true,
+        'unsigned' => TRUE,
       ),
     ),
-    'primary key' => array('content_type', 'series_name', 'field_content_type', 'field_series')
+    'primary key' => array(
+      'content_type', 'series_name', 'field_content_type', 'field_series'
+    ),
   );
 
   return $schema;
