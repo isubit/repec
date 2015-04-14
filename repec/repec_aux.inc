@@ -25,7 +25,8 @@ function repec_create_directory() {
     }
   }
 
-  // This function will generate the directory and the archive and series templates.
+  // This function will generate the directory
+  // and the archive and series templates.
   repec_generate_archive_template();
   repec_generate_series_template();
 
@@ -42,10 +43,12 @@ function repec_create_directory() {
 /**
  * Implements hook_repec_paper_mapping().
  */
-// It maps the series fields with the node fields to generate the template file.
-// The fields displayed on the settings page come from this function.
-// To display the fields on the settings page, the field has to have the property 'visible' set to TRUE.
+/**
+ * It maps the series fields with the node fields to generate the template file.
+ */
 function repec_repec_paper_mapping($node) {
+  // The fields displayed on the settings page come from this function.
+  // To display the fields on the settings page, the field has to have the property 'visible' set to TRUE.
 
   $mapping = array();
 
@@ -182,10 +185,13 @@ function repec_repec_paper_mapping($node) {
   return $mapping;
 }
 
-// This function generates the repec template for the article.
-// Based on this url: http://ideas.repec.org/t/papertemplate.html
-// This function returns the path for the template generated.
+/**
+ * This function generates the repec template for the article.
+ */
 function repec_generate_paper_template($node) {
+  // Based on this url: http://ideas.repec.org/t/papertemplate.html
+  // This function returns the path for the template generated.
+
   $repec_papers_path = variable_get('repec_base_path') . '/' . variable_get('repec_archive_code') . '/' . variable_get('repec_paper_dir', 'wpaper') . '/';
   $content_type = variable_get('repec_paper_content_type');
   $series_name = variable_get('repec_series_name');
@@ -229,9 +235,9 @@ function repec_remove_paper_template($node) {
 /**
  * Implements hook_repec_series_mapping().
  */
-// It maps the series attributes to the settings informed by the user to generate the series template file.
-// This runs when user saves the settings page.
 function repec_repec_series_mapping() {
+  // It maps the series attributes to the settings informed by the user to generate the series template file.
+  // This runs when user saves the settings page.
 
   $attributes = array(
     array(
@@ -275,10 +281,12 @@ function repec_repec_series_mapping() {
   return $attributes;
 }
 
-// This function generates the repec template for the series.
-// Based on this url: http://ideas.repec.org/t/seritemplate.html.
-// This function returns the path for the template generated.
+/**
+ * This function generates the repec template for the series.
+ */
 function repec_generate_series_template() {
+  // Based on this url: http://ideas.repec.org/t/seritemplate.html.
+  // This function returns the path for the template generated.
   $repec_archive_path = variable_get('repec_base_path') . '/' . variable_get('repec_archive_code') . '/';
   if (!file_exists($repec_archive_path)) {
     if (!mkdir($repec_archive_path, 0777, TRUE)) {
@@ -305,8 +313,9 @@ function repec_generate_series_template() {
 /**
  * Implements hook_repec_archive_mapping().
  */
-// It maps the archive fields with the fields informed by the user on the settings page.
 function repec_repec_archive_mapping() {
+  // It maps the archive fields with the fields informed
+  // by the user on the settings page.
 
   $attributes = array(
     array(
@@ -345,9 +354,9 @@ function repec_repec_archive_mapping() {
 /**
  * This function generates the repec template for the series.
  */
-// Based on this url: http://ideas.repec.org/t/archtemplate.html.
-// This function returns the path for the template generated.
 function repec_generate_archive_template() {
+  // Based on this url: http://ideas.repec.org/t/archtemplate.html.
+  // This function returns the path for the template generated.
   $repec_archive_path = variable_get('repec_base_path') . '/' . variable_get('repec_archive_code') . '/';
   if (!file_exists($repec_archive_path)) {
     if (!mkdir($repec_archive_path, 0777, TRUE)) {
@@ -374,8 +383,8 @@ function repec_generate_archive_template() {
 /**
  * This function generates an array of authors.
  */
-// Delimiters (and, &, ',', ';', with).
 function repec_generate_array_authors($authors_names) {
+  // Delimiters (and, &, ',', ';', with).
   // Author Name.
   // Break by and.
   $check_delimiters = variable_get('repec_check_delimiters', 1);

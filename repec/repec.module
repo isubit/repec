@@ -22,7 +22,7 @@ function repec_node_insert($node) {
  */
 /**
  * It updates the template file for the node.
- */ 
+ */
 function repec_node_update($node) {
   module_load_include('inc', 'repec', 'repec_aux');
   // This function is called in repec_aux
@@ -33,7 +33,6 @@ function repec_node_update($node) {
  * Implements hook_node_delete().
  */
 /**
- * It removes the template file for the node.
  * It's not automatically removed from RePEc repository.
  */
 function repec_node_delete($node) {
@@ -66,7 +65,9 @@ function repec_form_alter(&$form, $form_state, $form_id) {
   }
 }
 
-// Settings Form at admin/config/services/repec.
+/**
+ * Settings Form at admin/config/services/repec.
+ */
 function repec_settings_form($form, &$form_state) {
 
   $form['description_markup'] = array(
@@ -260,8 +261,10 @@ function repec_ajax_fieldset_association($form, &$form_state) {
 }
 
 /**
- * This function associates the fields,
- * triggered by checked content type radiobutton.
+ * This function associates the fields.
+ */
+/**
+ * This is triggered by checked content type radiobutton.
  */
 function repec_associate_fields($form_state) {
   if (!empty($form_state['triggering_element']) && $form_state['triggering_element']['#id'] == 'add_button') {
@@ -280,7 +283,9 @@ function repec_associate_fields($form_state) {
 
 /**
  * This function disassociates the fields,
- * triggered by unchecked field series checkbox and content type select box.
+ */
+/**
+ * This is triggered by unchecked field series checkbox and content type select box.
  */
 function repec_disassociate_fields($form_state) {
   if (!empty($form_state['triggering_element']) && strpos($form_state['triggering_element']['#id'], 'remove_button') !== FALSE) {
@@ -341,7 +346,7 @@ function repec_fields_association(&$form, &$form_state, $content_type) {
         '#type' => 'select',
         '#options' => array(
           'none' => 'Select a series field',
-          $field_name => t('!value', array('!value' => $value))
+          $field_name => t('!value', array('!value' => $value)),
         ),
         '#value' => $field_name,
         '#prefix' => "<div class='select_series_fields'>",
@@ -354,7 +359,7 @@ function repec_fields_association(&$form, &$form_state, $content_type) {
         '#options' => array(
           'none' => 'Select a content type field',
           $field_content_type => t('!value',
-          array('!value' => $ct_fields[$field_content_type]['label']))
+          array('!value' => $ct_fields[$field_content_type]['label'])),
         ),
         '#value' => $field_content_type,
         '#prefix' => "<div class='select_content_type'>",
@@ -420,7 +425,7 @@ function repec_fields_association(&$form, &$form_state, $content_type) {
     '#ajax' => array(
       'callback' => 'repec_ajax_fieldset_association',
       'wrapper' => 'field_association_fieldset',
-      'prevent' => 'sumbit'
+      'prevent' => 'sumbit',
     ),
     '#prefix' => "<div class='button_add'>",
     '#suffix' => "</div>",

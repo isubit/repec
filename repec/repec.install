@@ -37,7 +37,7 @@ function repec_schema() {
       ),
     ),
     'primary key' => array(
-      'content_type', 'series_name', 'field_content_type', 'field_series'
+      'content_type', 'series_name', 'field_content_type', 'field_series',
     ),
   );
 
