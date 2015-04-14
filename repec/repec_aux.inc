@@ -50,7 +50,6 @@ function repec_repec_paper_mapping($node) {
   // The fields displayed on the settings page come from this function.
   // To display the fields on the settings page,
   // the field has to have the property 'visible' set to TRUE.
-
   $mapping = array();
 
   $node_vars = get_object_vars($node);
@@ -235,7 +234,8 @@ function repec_remove_paper_template($node) {
  * Implements hook_repec_series_mapping().
  */
 function repec_repec_series_mapping() {
-  // It maps the series attributes to the settings informed by the user to generate the series template file.
+  // It maps the series attributes to the settings informed
+  // by the user to generate the series template file.
   // This runs when user saves the settings page.
   $attributes = array(
     array(

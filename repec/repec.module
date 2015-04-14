@@ -282,12 +282,10 @@ function repec_associate_fields($form_state) {
 }
 
 /**
- * This function disassociates the fields,
- */
-/**
- * This is triggered by unchecked field series checkbox and content type select box.
+ * This function disassociates the fields.
  */
 function repec_disassociate_fields($form_state) {
+  // This is triggered by unchecked field series checkbox and content type select box.
   if (!empty($form_state['triggering_element']) && strpos($form_state['triggering_element']['#id'], 'remove_button') !== FALSE) {
     $content_type = $form_state['values']['repec_paper_content_type'];
     $series = $form_state['values']['repec_series_name'];
