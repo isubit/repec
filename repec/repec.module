@@ -316,6 +316,7 @@ function repec_fields_association(&$form, &$form_state, $content_type) {
   $series_fields = array();
 
   $mapping = module_invoke_all('repec_paper_mapping', NULL);
+  $node = isset($node) ? $node : NULL;
   drupal_alter('repec_paper_mapping', $mapping, $node);
 
   foreach ($mapping as $item) {
@@ -339,13 +340,13 @@ function repec_fields_association(&$form, &$form_state, $content_type) {
     else {
       unset($available_fields_ct[$field_content_type]);
     }
-    $count_series = empty($count_series) ? 0 : $count_series;
+    $count_series = isset($count_series) ? $count_series : 0;
 
     if ($field_content_type != FALSE) {
       $form['repec_series']['repec_paper']['field_association']['field_series_' . $count_series] = array(
         '#type' => 'select',
         '#options' => array(
-          'none' => 'Select a series field',
+          'none' => t('Select a series field'),
           $field_name => t('!value', array('!value' => $value)),
         ),
         '#value' => $field_name,
@@ -357,7 +358,7 @@ function repec_fields_association(&$form, &$form_state, $content_type) {
       $form['repec_series']['repec_paper']['field_association']['field_ct_' . $count_series] = array(
         '#type' => 'select',
         '#options' => array(
-          'none' => 'Select a content type field',
+          'none' => t('Select a content type field'),
           $field_content_type => t('!value',
           array('!value' => $ct_fields[$field_content_type]['label'])),
         ),

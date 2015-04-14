@@ -48,7 +48,8 @@ function repec_create_directory() {
  */
 function repec_repec_paper_mapping($node) {
   // The fields displayed on the settings page come from this function.
-  // To display the fields on the settings page, the field has to have the property 'visible' set to TRUE.
+  // To display the fields on the settings page,
+  // the field has to have the property 'visible' set to TRUE.
 
   $mapping = array();
 
@@ -191,10 +192,8 @@ function repec_repec_paper_mapping($node) {
 function repec_generate_paper_template($node) {
   // Based on this url: http://ideas.repec.org/t/papertemplate.html
   // This function returns the path for the template generated.
-
   $repec_papers_path = variable_get('repec_base_path') . '/' . variable_get('repec_archive_code') . '/' . variable_get('repec_paper_dir', 'wpaper') . '/';
   $content_type = variable_get('repec_paper_content_type');
-  $series_name = variable_get('repec_series_name');
 
   if ($node->type == $content_type) {
     $file_name = variable_get('repec_paper_dir', 'wpaper') . '_' . $node->vid . '.rdf';
@@ -238,7 +237,6 @@ function repec_remove_paper_template($node) {
 function repec_repec_series_mapping() {
   // It maps the series attributes to the settings informed by the user to generate the series template file.
   // This runs when user saves the settings page.
-
   $attributes = array(
     array(
       'attribute' => 'Template-type',
@@ -316,7 +314,6 @@ function repec_generate_series_template() {
 function repec_repec_archive_mapping() {
   // It maps the archive fields with the fields informed
   // by the user on the settings page.
-
   $attributes = array(
     array(
       'attribute' => 'Template-type',
