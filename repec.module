@@ -315,7 +315,7 @@ function repec_fields_association(&$form, &$form_state, $content_type) {
   $series_fields = array();
 
   $mapping = module_invoke_all('repec_paper_mapping', NULL);
-  $node = isset($node) ? $node : NULL;
+  $node = NULL;
   drupal_alter('repec_paper_mapping', $mapping, $node);
 
   foreach ($mapping as $item) {
