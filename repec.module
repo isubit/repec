@@ -331,6 +331,7 @@ function repec_fields_association(&$form, &$form_state, $content_type) {
     $available_fields_ct[$field_name] = $value['label'];
   }
 
+  $count_series = 0;
   foreach ($series_fields as $field_name => $value) {
     $field_content_type = repec_get_field_content_type($content_type, $series, $field_name);
     if ($field_content_type == FALSE) {
@@ -339,7 +340,6 @@ function repec_fields_association(&$form, &$form_state, $content_type) {
     else {
       unset($available_fields_ct[$field_content_type]);
     }
-    $count_series = isset($count_series) ? $count_series : 0;
 
     if ($field_content_type != FALSE) {
       $form['repec_series']['repec_paper']['field_association']['field_series_' . $count_series] = array(
