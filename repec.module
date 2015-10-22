@@ -70,7 +70,7 @@ function repec_form_alter(&$form, $form_state, $form_id) {
  */
 function repec_settings_form($form, &$form_state) {
 
-  $form['description_markup'] = array(
+  $form['repec_description_markup'] = array(
     '#type' => 'markup',
     '#markup' => t('This module helps you create a repository for') . ' <a href="http://repec.org" target="_blank">' . t('Research Papers in Economics') . '</a> ' . t('(RePEc). A template is created an updated automatically when new content is added to a content type matched in the Paper Series. <br/>
 RePEc is a collaborative effort of hundreds of volunteers in 82 countries to enhance the dissemination of research in Economics and related sciences. Collected papers are searchable from the ') . '<a href="http://ideas.repec.org" target="_blank">' . t('RePEc Ideas website.') . '</a>',
@@ -215,18 +215,18 @@ RePEc is a collaborative effort of hundreds of volunteers in 82 countries to enh
     '#description' => t('Select the content type associated to this series.'),
     '#ajax' => array(
       'callback' => 'repec_ajax_fieldset_association',
-      'wrapper' => 'field_association_fieldset',
+      'wrapper' => 'repec_field_association_fieldset',
       'method' => 'replace',
       'effect' => 'fade',
     ),
     '#default_value' => variable_get('repec_paper_content_type'),
   );
 
-  $form['repec_series']['repec_paper']['field_association'] = array(
+  $form['repec_series']['repec_paper']['repec_field_association'] = array(
     '#title' => t('Field Association'),
     '#type' => 'fieldset',
     '#description' => t('Please, associate fields from the selected content type to the series template. This will automatically be persisted.'),
-    '#prefix' => '<div id="field_association_fieldset">',
+    '#prefix' => '<div id="repec_field_association_fieldset">',
     '#suffix' => '</div>',
     '#states' => array(
       'visible' => array(
@@ -257,7 +257,7 @@ RePEc is a collaborative effort of hundreds of volunteers in 82 countries to enh
  * This function recreates the fieldset_association.
  */
 function repec_ajax_fieldset_association($form, &$form_state) {
-  return $form['repec_series']['repec_paper']['field_association'];
+  return $form['repec_series']['repec_paper']['repec_field_association'];
 }
 
 /**
@@ -308,7 +308,7 @@ function repec_fields_association(&$form, &$form_state, $content_type) {
   module_load_include('inc', 'repec', 'repec_aux');
   $ct_fields = field_info_instances('node', $content_type);
 
-  $form['repec_series']['repec_paper']['field_association']['#title'] = t("Fields for !content", array('!content' => node_type_get_name($content_type)));
+  $form['repec_series']['repec_paper']['repec_field_association']['#title'] = t("Fields for !content", array('!content' => node_type_get_name($content_type)));
 
   // Fields for the Series Template.
   $series = $form_state['values']['repec_series_name'];
@@ -342,7 +342,7 @@ function repec_fields_association(&$form, &$form_state, $content_type) {
     }
 
     if ($field_content_type != FALSE) {
-      $form['repec_series']['repec_paper']['field_association']['field_series_' . $count_series] = array(
+      $form['repec_series']['repec_paper']['repec_field_association']['field_series_' . $count_series] = array(
         '#type' => 'select',
         '#options' => array(
           'none' => t('Select a series field'),
@@ -354,7 +354,7 @@ function repec_fields_association(&$form, &$form_state, $content_type) {
         '#disabled' => TRUE,
       );
 
-      $form['repec_series']['repec_paper']['field_association']['field_ct_' . $count_series] = array(
+      $form['repec_series']['repec_paper']['repec_field_association']['field_ct_' . $count_series] = array(
         '#type' => 'select',
         '#options' => array(
           'none' => t('Select a content type field'),
@@ -366,14 +366,14 @@ function repec_fields_association(&$form, &$form_state, $content_type) {
         '#suffix' => "</div>",
         '#disabled' => TRUE,
       );
-      $form['repec_series']['repec_paper']['field_association']['remove_' . $count_series++] = array(
+      $form['repec_series']['repec_paper']['repec_field_association']['remove_' . $count_series++] = array(
         '#id' => 'remove_button_' . $field_name,
         '#name' => $field_name,
         '#type' => 'button',
         '#value' => t('Remove'),
         '#ajax' => array(
           'callback' => 'repec_ajax_fieldset_association',
-          'wrapper' => 'field_association_fieldset',
+          'wrapper' => 'repec_field_association_fieldset',
           'prevent' => 'sumbit',
         ),
         '#prefix' => "<div class='button_remove'>",
@@ -381,7 +381,7 @@ function repec_fields_association(&$form, &$form_state, $content_type) {
       );
 
       if ($field_name == 'author') {
-        $form['repec_series']['repec_paper']['field_association']['repec_check_delimiters'] = array(
+        $form['repec_series']['repec_paper']['repec_field_association']['repec_check_delimiters'] = array(
           '#type' => 'checkbox',
           '#title' => t('Check to split the field by delimiters ( and & , ; )'),
           '#prefix' => "<div class='check_delimiters'>",
@@ -393,7 +393,7 @@ function repec_fields_association(&$form, &$form_state, $content_type) {
   }
 
   // Select Box.
-  $form['repec_series']['repec_paper']['field_association']['new_item'] = array(
+  $form['repec_series']['repec_paper']['repec_field_association']['new_item'] = array(
     '#title' => t('Choose a new association'),
     '#type' => 'item',
     '#prefix' => "<div class='new_item'>",
@@ -401,7 +401,7 @@ function repec_fields_association(&$form, &$form_state, $content_type) {
   );
 
   // Select Box.
-  $form['repec_series']['repec_paper']['field_association']['new_field_series'] = array(
+  $form['repec_series']['repec_paper']['repec_field_association']['new_field_series'] = array(
     '#type' => 'select',
     '#options' => array_merge(array('none' => 'Select a series field'), $available_fields_series),
     '#default_value' => 'none',
@@ -410,7 +410,7 @@ function repec_fields_association(&$form, &$form_state, $content_type) {
   );
 
   // Select Box.
-  $form['repec_series']['repec_paper']['field_association']['new_field_ct'] = array(
+  $form['repec_series']['repec_paper']['repec_field_association']['new_field_ct'] = array(
     '#type' => 'select',
     '#options' => array_merge(array('none' => 'Select a content type field'), $available_fields_ct),
     '#default_value' => 'none',
@@ -418,13 +418,13 @@ function repec_fields_association(&$form, &$form_state, $content_type) {
     '#suffix' => "</div>",
   );
 
-  $form['repec_series']['repec_paper']['field_association']['add_' . $count_series++] = array(
+  $form['repec_series']['repec_paper']['repec_field_association']['add_' . $count_series++] = array(
     '#type' => 'button',
     '#id' => 'add_button',
     '#value' => t('Add'),
     '#ajax' => array(
       'callback' => 'repec_ajax_fieldset_association',
-      'wrapper' => 'field_association_fieldset',
+      'wrapper' => 'repec_field_association_fieldset',
       'prevent' => 'sumbit',
     ),
     '#prefix' => "<div class='button_add'>",
