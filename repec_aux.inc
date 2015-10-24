@@ -41,151 +41,6 @@ function repec_create_directory() {
 }
 
 /**
- * Implements hook_repec_paper_mapping().
- */
-/**
- * It maps the series fields with the node fields to generate the template file.
- */
-function repec_repec_paper_mapping($node) {
-  // The fields displayed on the settings page come from this function.
-  // To display the fields on the settings page,
-  // the field has to have the property 'visible' set to TRUE.
-  $mapping = array();
-
-  $node_vars = get_object_vars($node);
-  $content_type = variable_get('repec_paper_content_type');
-  $series_name = variable_get('repec_series_name');
-
-  $mapping[] = array(
-    'property' => 'Template-Type',
-    'value' => 'ReDIF-Paper 1.0',
-  );
-
-  // Title of the Article.
-  $mapping[] = array(
-    'property' => 'Title',
-    'value' => isset($node->title) ? $node->title : '',
-  );
-
-  $author_field = repec_get_field_content_type($content_type, $series_name, 'Author-Name');
-  if (!empty($author_field) && !empty($node_vars[$author_field][LANGUAGE_NONE][0]['value'])) {
-    $authors = repec_generate_array_authors($node_vars[$author_field][LANGUAGE_NONE][0]['value']);
-
-    foreach ($authors as $author) {
-      $mapping[] = array(
-        'property' => 'Author-Name',
-        'value' => $author,
-        'visible' => TRUE,
-      );
-    }
-  }
-  else {
-    $mapping[] = array(
-      'property' => 'Author-Name',
-      'value' => '',
-      'visible' => TRUE,
-    );
-  }
-
-  // Abstract of the article.
-  $abstract = repec_get_field_content_type($content_type, $series_name, 'Abstract');
-  if (!empty($abstract) && !empty($node_vars[$abstract][LANGUAGE_NONE][0]['value'])) {
-    $mapping[] = array(
-      'property' => 'Abstract',
-      'value' => str_replace(array("\r", "\n", "<br />", "<br/>"), "", $node_vars[$abstract][LANGUAGE_NONE][0]['value']),
-      'visible' => TRUE,
-    );
-  }
-  else {
-    $mapping[] = array(
-      'property' => 'Abstract',
-      'value' => '',
-      'visible' => TRUE,
-    );
-  }
-
-  // Date of the article.
-  $create_date = repec_get_field_content_type($content_type, $series_name, 'Creation-Date');
-  if (!empty($create_date) && !empty($node_vars[$create_date][LANGUAGE_NONE][0]['value'])) {
-    $mapping[] = array(
-      'property' => 'Creation-Date',
-      'value' => $node_vars[$create_date][LANGUAGE_NONE][0]['value'],
-      'visible' => TRUE,
-    );
-  }
-  else {
-    $mapping[] = array(
-      'property' => 'Creation-Date',
-      'value' => '',
-      'visible' => TRUE,
-    );
-  }
-
-  // File for the article.
-  $file_url = repec_get_field_content_type($content_type, $series_name, 'File-URL');
-  if (!empty($file_url) && !empty($node_vars[$file_url][LANGUAGE_NONE][0]['fid'])) {
-    $file_article = file_load($node_vars[$file_url][LANGUAGE_NONE][0]['fid']);
-
-    $mapping[] = array(
-      'property' => 'File-URL',
-      'value' => str_replace(" ", "%20", file_create_url($file_article->uri)),
-      'visible' => TRUE,
-    );
-    $mapping[] = array(
-      'property' => 'File-Format',
-      'value' => ucfirst($file_article->filemime),
-    );
-  }
-  else {
-    $mapping[] = array(
-      'property' => 'File-URL',
-      'value' => '',
-      'visible' => TRUE,
-    );
-  }
-
-  // Keywords.
-  $key = repec_get_field_content_type($content_type, $series_name, 'Keywords');
-  if (!empty($key) && !empty($node_vars[$key][LANGUAGE_NONE])) {
-    $keywords = '';
-    foreach ($node_vars[$key][LANGUAGE_NONE] as $keyword) {
-      $term = taxonomy_term_load($keyword['tid']);
-      $keywords .= $term->name . ', ';
-    }
-    if (strlen($keywords) > 0) {
-      $keywords = substr($keywords, 0, strlen($keywords) - 2);
-    }
-
-    $mapping[] = array(
-      'property' => 'Keywords',
-      'value' => $keywords,
-      'visible' => TRUE,
-    );
-  }
-  else {
-    $mapping[] = array(
-      'property' => 'Keywords',
-      'value' => '',
-      'visible' => TRUE,
-    );
-  }
-
-  // Number or id of the Article.
-  $mapping[] = array(
-    'property' => 'Number',
-    'value' => isset($node->nid) ? $node->nid : '',
-  );
-
-  // Handle that uniquely identifies the paper.
-  $mapping[] = array(
-    'property' => 'Handle',
-    'value' => 'RePEc:' . variable_get('repec_archive_code') . ':wpaper:' . $node->nid,
-  );
-
-  return $mapping;
-}
-
-/**
  * This function generates the repec template for the article.
  */
 function repec_generate_paper_template($node) {
@@ -200,6 +55,7 @@ function repec_generate_paper_template($node) {
     if (!file_exists($repec_papers_path)) {
       if (!mkdir($repec_papers_path, 0755, TRUE)) {
         drupal_set_message(t("Directory couldn't be created in this path"), 'error');
+        return;
       }
     }
 
@@ -215,6 +71,7 @@ function repec_generate_paper_template($node) {
 
     if (!file_put_contents($repec_papers_path . $file_name, $content)) {
       drupal_set_message(t("File couldn't be created"), "error");
+      return;
     }
 
     return $repec_papers_path . $file_name;
@@ -228,55 +85,6 @@ function repec_remove_paper_template($node) {
   $repec_papers_path = variable_get('repec_base_path') . '/' . variable_get('repec_archive_code') . '/' . variable_get('repec_paper_dir', 'wpaper') . '/';
   $file_name = variable_get('repec_paper_dir', 'wpaper') . '_' . $node->vid . '.rdf';
   unlink($repec_papers_path . $file_name);
-}
-
-/**
- * Implements hook_repec_series_mapping().
- */
-function repec_repec_series_mapping() {
-  // It maps the series attributes to the settings informed
-  // by the user to generate the series template file.
-  // This runs when user saves the settings page.
-  $attributes = array(
-    array(
-      'attribute' => 'Template-type',
-      'value' => 'ReDIF-Series 1.0',
-    ),
-    array(
-      'attribute' => 'Name',
-      'value' => variable_get('repec_paper_name'),
-    ),
-    array(
-      'attribute' => 'Provider-Name',
-      'value' => variable_get('repec_provider_name'),
-    ),
-    array(
-      'attribute' => 'Provider-Homepage',
-      'value' => variable_get('repec_provider_homepage'),
-    ),
-    array(
-      'attribute' => 'Provider-Institution',
-      'value' => variable_get('repec_provider_institution'),
-    ),
-    array(
-      'attribute' => 'Maintainer-Name',
-      'value' => variable_get('repec_maintainer_name'),
-    ),
-    array(
-      'attribute' => 'Maintainer-Email',
-      'value' => variable_get('repec_maintainer_email'),
-    ),
-    array(
-      'attribute' => 'Type',
-      'value' => 'ReDIF-Paper',
-    ),
-    array(
-      'attribute' => 'Handle',
-      'value' => 'RePEc:' . variable_get('repec_archive_code') . ':wpaper',
-    ),
-  );
-
-  return $attributes;
 }
 
 /**
@@ -306,46 +114,6 @@ function repec_generate_series_template() {
     drupal_set_message(t("File couldn't be created"), "error");
   }
   return $repec_archive_path . $file_name;
-}
-
-/**
- * Implements hook_repec_archive_mapping().
- */
-function repec_repec_archive_mapping() {
-  // It maps the archive fields with the fields informed
-  // by the user on the settings page.
-  $attributes = array(
-    array(
-      'attribute' => 'Template-type',
-      'value' => 'ReDIF-Archive 1.0',
-    ),
-    array(
-      'attribute' => 'Handle',
-      'value' => 'RePEc:' . variable_get('repec_archive_code'),
-    ),
-    array(
-      'attribute' => 'Name',
-      'value' => variable_get('repec_provider_name'),
-    ),
-    array(
-      'attribute' => 'Maintainer-Name',
-      'value' => variable_get('repec_maintainer_name'),
-    ),
-    array(
-      'attribute' => 'Maintainer-Email',
-      'value' => variable_get('repec_maintainer_email'),
-    ),
-    array(
-      'attribute' => 'Description',
-      'value' => 'This archive collects ' . variable_get('repec_paper_name') . ' from ' . variable_get('repec_provider_name'),
-    ),
-    array(
-      'attribute' => 'URL',
-      'value' => variable_get('repec_provider_homepage') . variable_get('repec_base_path') . '/' . variable_get('repec_archive_code') . '/',
-    ),
-  );
-
-  return $attributes;
 }
 
 /**
