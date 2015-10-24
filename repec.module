@@ -6,7 +6,7 @@
  */
 
  /**
-  * Add form
+  * Add form.
   */
 module_load_include('inc', 'repec', 'repec_form');
 
