@@ -5,14 +5,18 @@
  * This module implements the integration between Content Type and RePEc.
  */
 
+ global $module_variables;
+
 /**
  * This function creates directory based on the settings informed by the user.
  */
 function repec_create_directory() {
-  $repec_papers_path = variable_get('repec_base_path') . '/' . variable_get('repec_archive_code') . '/' . variable_get('repec_paper_dir', 'wpaper') . '/';
+  global $module_variables;
 
-  if (!file_exists(variable_get('repec_base_path'))) {
-    if (!mkdir(variable_get('repec_base_path'), 0755, TRUE)) {
+  $repec_papers_path = $module_variables['repec_base_path'] . '/' . $module_variables['repec_archive_code'] . '/' . $module_variables['repec_paper_dir'] . '/';
+
+  if (!file_exists($module_variables['repec_base_path'])) {
+    if (!mkdir($module_variables['repec_base_path'], 0755, TRUE)) {
       drupal_set_message(t("Directory couldn't be created in this path"), 'error');
     }
   }
@@ -44,13 +48,15 @@ function repec_create_directory() {
  * This function generates the repec template for the article.
  */
 function repec_generate_paper_template($node) {
+  global $module_variables;
+
   // Based on this url: http://ideas.repec.org/t/papertemplate.html
   // This function returns the path for the template generated.
-  $repec_papers_path = variable_get('repec_base_path') . '/' . variable_get('repec_archive_code') . '/' . variable_get('repec_paper_dir', 'wpaper') . '/';
-  $content_type = variable_get('repec_paper_content_type');
+  $repec_papers_path = $module_variables['repec_base_path'] . '/' . $module_variables['repec_archive_code'] . '/' . $module_variables['repec_paper_dir'] . '/';
+  $content_type = $module_variables['repec_paper_content_type'];
 
   if ($node->type == $content_type) {
-    $file_name = variable_get('repec_paper_dir', 'wpaper') . '_' . $node->vid . '.rdf';
+    $file_name = $module_variables['repec_paper_dir'] . '_' . $node->vid . '.rdf';
 
     if (!file_exists($repec_papers_path)) {
       if (!mkdir($repec_papers_path, 0755, TRUE)) {
@@ -82,8 +88,10 @@ function repec_generate_paper_template($node) {
  * Remove a template file.
  */
 function repec_remove_paper_template($node) {
-  $repec_papers_path = variable_get('repec_base_path') . '/' . variable_get('repec_archive_code') . '/' . variable_get('repec_paper_dir', 'wpaper') . '/';
-  $file_name = variable_get('repec_paper_dir', 'wpaper') . '_' . $node->vid . '.rdf';
+  global $module_variables;
+
+  $repec_papers_path = $module_variables['repec_base_path'] . '/' . $module_variables['repec_archive_code'] . '/' . $module_variables['repec_paper_dir'] . '/';
+  $file_name = $module_variables['repec_paper_dir'] . '_' . $node->vid . '.rdf';
   unlink($repec_papers_path . $file_name);
 }
 
@@ -91,16 +99,18 @@ function repec_remove_paper_template($node) {
  * This function generates the repec template for the series.
  */
 function repec_generate_series_template() {
+  global $module_variables;
+
   // Based on this url: http://ideas.repec.org/t/seritemplate.html.
   // This function returns the path for the template generated.
-  $repec_archive_path = variable_get('repec_base_path') . '/' . variable_get('repec_archive_code') . '/';
+  $repec_archive_path = $module_variables['repec_base_path'] . '/' . $module_variables['repec_archive_code'] . '/';
   if (!file_exists($repec_archive_path)) {
     if (!mkdir($repec_archive_path, 0777, TRUE)) {
       drupal_set_message(t("Directory couldn't be created in this path"), 'error');
     }
   }
 
-  $file_name = variable_get('repec_archive_code') . 'seri.rdf';
+  $file_name = $module_variables['repec_archive_code'] . 'seri.rdf';
 
   $attributes = module_invoke_all('repec_series_mapping');
   drupal_alter('repec_series_mapping', $attributes);
@@ -120,16 +130,18 @@ function repec_generate_series_template() {
  * This function generates the repec template for the series.
  */
 function repec_generate_archive_template() {
+  global $module_variables;
+
   // Based on this url: http://ideas.repec.org/t/archtemplate.html.
   // This function returns the path for the template generated.
-  $repec_archive_path = variable_get('repec_base_path') . '/' . variable_get('repec_archive_code') . '/';
+  $repec_archive_path = $module_variables['repec_base_path'] . '/' . $module_variables['repec_archive_code'] . '/';
   if (!file_exists($repec_archive_path)) {
     if (!mkdir($repec_archive_path, 0777, TRUE)) {
       drupal_set_message(t("Directory couldn't be created in this path"), 'error');
     }
   }
 
-  $file_name = variable_get('repec_archive_code') . 'arch.rdf';
+  $file_name = $module_variables['repec_archive_code'] . 'arch.rdf';
 
   $attributes = module_invoke_all('repec_archive_mapping');
   drupal_alter('repec_archive_mapping', $attributes);
@@ -149,10 +161,12 @@ function repec_generate_archive_template() {
  * This function generates an array of authors.
  */
 function repec_generate_array_authors($authors_names) {
+  global $module_variables;
+
   // Delimiters (and, &, ',', ';', with).
   // Author Name.
   // Break by and.
-  $check_delimiters = variable_get('repec_check_delimiters', 1);
+  $check_delimiters = $module_variables['repec_check_delimiters'];
   if (empty($check_delimiters) || $check_delimiters == 0) {
     return array($authors_names);
   }

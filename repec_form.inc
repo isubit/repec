@@ -4,7 +4,7 @@
  * @file
  * This module implements the form for RePEc settings.
  */
-
+ 
 /**
  * Implements hook_form_alter().
  */
@@ -19,6 +19,7 @@ function repec_form_alter(&$form, $form_state, $form_id) {
  * Settings Form at admin/config/services/repec.
  */
 function repec_settings_form($form, &$form_state) {
+  global $module_variables;
 
   $form['description_markup'] = array(
     '#type' => 'markup',
@@ -33,7 +34,7 @@ RePEc is a collaborative effort of hundreds of volunteers in 82 countries to enh
     '#type' => 'textfield',
     '#title' => t('Archive Code'),
     '#description' => t('This code must be registered and provided by RePEc. This has three letters.'),
-    '#default_value' => variable_get('repec_archive_code'),
+    '#default_value' => $module_variables['repec_archive_code'],
     '#maxlength' => 3,
     '#required' => TRUE,
   );
@@ -43,7 +44,7 @@ RePEc is a collaborative effort of hundreds of volunteers in 82 countries to enh
     '#type' => 'textfield',
     '#title' => t('Base Path'),
     '#description' => t('This is the path for the main directory to store the template files. This is the directory to be checked by RePEc system. You must setup this path on the filesystem.'),
-    '#default_value' => variable_get('repec_base_path', variable_get('file_public_path', conf_path() . '/files') . '/RePEc'),
+    '#default_value' => $module_variables['repec_base_path'],
     '#required' => TRUE,
   );
 
@@ -58,7 +59,7 @@ RePEc is a collaborative effort of hundreds of volunteers in 82 countries to enh
     '#type' => 'textfield',
     '#title' => t('Provider Name'),
     '#description' => t('This is the name of the provider institution (example: University of Southern California, Lusk Center for Real Estate).'),
-    '#default_value' => variable_get('repec_provider_name'),
+    '#default_value' => $module_variables['repec_provider_name'],
     '#required' => TRUE,
   );
 
@@ -67,7 +68,7 @@ RePEc is a collaborative effort of hundreds of volunteers in 82 countries to enh
     '#type' => 'textfield',
     '#title' => t('Provider Homepage'),
     '#description' => t('This is the homepage of the provider institution (example: http://lusk.usc.edu).'),
-    '#default_value' => variable_get('repec_provider_homepage'),
+    '#default_value' => $module_variables['repec_provider_homepage'],
     '#maxlength' => 60,
     '#required' => TRUE,
   );
@@ -77,7 +78,7 @@ RePEc is a collaborative effort of hundreds of volunteers in 82 countries to enh
     '#type' => 'textfield',
     '#title' => t('Provider Institution'),
     '#description' => t('This is the provider institution (example: RePEc:edi:lcuscus).'),
-    '#default_value' => variable_get('repec_provider_institution'),
+    '#default_value' => $module_variables['repec_provider_institution'],
     '#required' => TRUE,
   );
 
@@ -92,7 +93,7 @@ RePEc is a collaborative effort of hundreds of volunteers in 82 countries to enh
     '#type' => 'textfield',
     '#title' => t('Maintainer Name'),
     '#description' => t('This is the name of the maintainer.'),
-    '#default_value' => variable_get('repec_maintainer_name'),
+    '#default_value' => $module_variables['repec_maintainer_name'],
     '#required' => TRUE,
   );
 
@@ -101,7 +102,7 @@ RePEc is a collaborative effort of hundreds of volunteers in 82 countries to enh
     '#type' => 'textfield',
     '#title' => t('Maintainer Email'),
     '#description' => t('This is the email of the maintainer.'),
-    '#default_value' => variable_get('repec_maintainer_email'),
+    '#default_value' => $module_variables['repec_maintainer_email'],
     '#required' => TRUE,
   );
 
@@ -118,7 +119,7 @@ RePEc is a collaborative effort of hundreds of volunteers in 82 countries to enh
     '#options' => array(
       'paper' => t('Paper Series'),
     ),
-    '#default_value' => variable_get('repec_series_name'),
+    '#default_value' => $module_variables['repec_series_name'],
     '#description' => t("Select the type of series (List of") . " <a href='http://ideas.repec.org/t/seritemplate.html' target='_blank'>" . t("available series") . "</a>)",
   );
 
@@ -138,7 +139,7 @@ RePEc is a collaborative effort of hundreds of volunteers in 82 countries to enh
     '#type' => 'textfield',
     '#title' => t('Paper Series Name'),
     '#description' => t('This is the name for the paper series. (example: Working Paper)'),
-    '#default_value' => variable_get('repec_paper_name', 'Working Paper'),
+    '#default_value' => $module_variables['repec_paper_name'],
   );
 
   // Directory to store paper templates.
@@ -146,7 +147,7 @@ RePEc is a collaborative effort of hundreds of volunteers in 82 countries to enh
     '#type' => 'textfield',
     '#title' => t('Paper Directory'),
     '#description' => t('This is the directory for the paper templates. This has six letters (example: wpaper). You must setup this directory on your filesystem'),
-    '#default_value' => variable_get('repec_paper_dir', 'wpaper'),
+    '#default_value' => $module_variables['repec_paper_dir'],
     '#maxlength' => 6,
   );
 
@@ -169,7 +170,7 @@ RePEc is a collaborative effort of hundreds of volunteers in 82 countries to enh
       'method' => 'replace',
       'effect' => 'fade',
     ),
-    '#default_value' => variable_get('repec_paper_content_type'),
+    '#default_value' => $module_variables['repec_paper_content_type'],
   );
 
   $form['repec_series']['repec_paper']['field_association'] = array(
@@ -186,9 +187,9 @@ RePEc is a collaborative effort of hundreds of volunteers in 82 countries to enh
   );
 
   // Setting the default values of the variables.
-  $form_state['values']['repec_paper_name'] = empty($form_state['values']['repec_paper_name']) ? variable_get('repec_paper_name') : $form_state['values']['repec_paper_name'];
-  $form_state['values']['repec_series_name'] = empty($form_state['values']['repec_series_name']) ? variable_get('repec_series_name') : $form_state['values']['repec_series_name'];
-  $form_state['values']['repec_paper_content_type'] = empty($form_state['values']['repec_paper_content_type']) ? variable_get('repec_paper_content_type') : $form_state['values']['repec_paper_content_type'];
+  $form_state['values']['repec_paper_name'] = empty($form_state['values']['repec_paper_name']) ? $module_variables['repec_paper_name'] : $form_state['values']['repec_paper_name'];
+  $form_state['values']['repec_series_name'] = empty($form_state['values']['repec_series_name']) ? $module_variables['repec_series_name'] : $form_state['values']['repec_series_name'];
+  $form_state['values']['repec_paper_content_type'] = empty($form_state['values']['repec_paper_content_type']) ? $module_variables['repec_paper_content_type'] : $form_state['values']['repec_paper_content_type'];
 
   $content_type = $form_state['values']['repec_paper_content_type'];
   if ($content_type != NULL) {
@@ -251,6 +252,7 @@ function repec_disassociate_fields($form_state) {
  * Displays the association for template - content_type fields.
  */
 function repec_fields_association(&$form, &$form_state, $content_type) {
+  global $module_variables;
 
   repec_disassociate_fields($form_state);
   repec_associate_fields($form_state);
@@ -336,7 +338,7 @@ function repec_fields_association(&$form, &$form_state, $content_type) {
           '#title' => t('Check to split the field by delimiters ( and & , ; )'),
           '#prefix' => "<div class='check_delimiters'>",
           '#suffix' => "</div>",
-          '#default_value' => empty($form_state['values']['repec_check_delimiters']) ? variable_get('repec_check_delimiters') : $form_state['values']['repec_check_delimiters'],
+          '#default_value' => empty($form_state['values']['repec_check_delimiters']) ? $module_variables['repec_check_delimiters'] : $form_state['values']['repec_check_delimiters'],
         );
       }
     }

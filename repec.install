@@ -48,7 +48,7 @@ function repec_schema() {
  * Implements hook_install().
  */
 function repec_install() {
-  variable_set('repec_base_path', variable_get('file_public_path', conf_path() . '/files') . '/RePEc');
+  variable_set('repec_base_path', conf_path() . '/files' . '/RePEc');
 }
 
 /**

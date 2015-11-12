@@ -5,10 +5,31 @@
  * This module implements the integration between Content Type and RePEc.
  */
 
+global $module_variables;
+$module_variables = global_variables();
+
  /**
   * Add form.
   */
 module_load_include('inc', 'repec', 'repec_form');
+
+function global_variables() {
+  $module_variables = array(
+    'repec_archive_code'         => variable_get('repec_archive_code'),
+    'repec_base_path'            => variable_get('repec_base_path'),
+    'repec_provider_name'        => variable_get('repec_provider_name'),
+    'repec_provider_homepage'    => variable_get('repec_provider_homepage'),
+    'repec_provider_institution' => variable_get('repec_provider_institution'),
+    'repec_maintainer_name'      => variable_get('repec_maintainer_name'),
+    'repec_maintainer_email'     => variable_get('repec_maintainer_email'),
+    'repec_series_name'          => variable_get('repec_series_name'),
+    'repec_paper_dir'            => variable_get('repec_paper_dir', 'wpaper'),
+    'repec_paper_name'           => variable_get('repec_paper_name', 'Working Paper'),
+    'repec_check_delimiters'     => variable_get('repec_check_delimiters', 1),
+    'repec_paper_content_type'   => variable_get('repec_paper_content_type'),
+  );
+  return $module_variables;
+}
 
 /**
  * Implements hook_node_insert().
@@ -67,14 +88,16 @@ function repec_menu() {
  * It maps the series fields with the node fields to generate the template file.
  */
 function repec_repec_paper_mapping($node) {
+  global $module_variables;
+
   // The fields displayed on the settings page come from this function.
   // To display the fields on the settings page,
   // the field has to have the property 'visible' set to TRUE.
   $mapping = array();
 
   $node_vars = get_object_vars($node);
-  $content_type = variable_get('repec_paper_content_type');
-  $series_name = variable_get('repec_series_name');
+  $content_type = $module_variables['repec_paper_content_type'];
+  $series_name = $module_variables['repec_series_name'];
 
   $mapping[] = array(
     'property' => 'Template-Type',
@@ -199,7 +222,7 @@ function repec_repec_paper_mapping($node) {
   // Handle that uniquely identifies the paper.
   $mapping[] = array(
     'property' => 'Handle',
-    'value' => 'RePEc:' . variable_get('repec_archive_code') . ':wpaper:' . $node->nid,
+    'value' => 'RePEc:' . $module_variables['repec_archive_code'] . ':wpaper:' . $node->nid,
   );
 
   return $mapping;
@@ -209,6 +232,8 @@ function repec_repec_paper_mapping($node) {
  * Implements hook_repec_series_mapping().
  */
 function repec_repec_series_mapping() {
+  global $module_variables;
+
   // It maps the series attributes to the settings informed
   // by the user to generate the series template file.
   // This runs when user saves the settings page.
@@ -219,27 +244,27 @@ function repec_repec_series_mapping() {
     ),
     array(
       'attribute' => 'Name',
-      'value' => variable_get('repec_paper_name'),
+      'value' => $module_variables['repec_paper_name'],
     ),
     array(
       'attribute' => 'Provider-Name',
-      'value' => variable_get('repec_provider_name'),
+      'value' => $module_variables['repec_provider_name'],
     ),
     array(
       'attribute' => 'Provider-Homepage',
-      'value' => variable_get('repec_provider_homepage'),
+      'value' => $module_variables['repec_provider_homepage'],
     ),
     array(
       'attribute' => 'Provider-Institution',
-      'value' => variable_get('repec_provider_institution'),
+      'value' => $module_variables['repec_provider_institution'],
     ),
     array(
       'attribute' => 'Maintainer-Name',
-      'value' => variable_get('repec_maintainer_name'),
+      'value' => $module_variables['repec_maintainer_name'],
     ),
     array(
       'attribute' => 'Maintainer-Email',
-      'value' => variable_get('repec_maintainer_email'),
+      'value' => $module_variables['repec_maintainer_email'],
     ),
     array(
       'attribute' => 'Type',
@@ -247,7 +272,7 @@ function repec_repec_series_mapping() {
     ),
     array(
       'attribute' => 'Handle',
-      'value' => 'RePEc:' . variable_get('repec_archive_code') . ':wpaper',
+      'value' => 'RePEc:' . $module_variables['repec_archive_code'] . ':wpaper',
     ),
   );
 
@@ -258,6 +283,8 @@ function repec_repec_series_mapping() {
  * Implements hook_repec_archive_mapping().
  */
 function repec_repec_archive_mapping() {
+  global $module_variables;
+
   // It maps the archive fields with the fields informed
   // by the user on the settings page.
   $attributes = array(
@@ -267,27 +294,27 @@ function repec_repec_archive_mapping() {
     ),
     array(
       'attribute' => 'Handle',
-      'value' => 'RePEc:' . variable_get('repec_archive_code'),
+      'value' => 'RePEc:' . $module_variables['repec_archive_code'],
     ),
     array(
       'attribute' => 'Name',
-      'value' => variable_get('repec_provider_name'),
+      'value' => $module_variables['repec_provider_name'],
     ),
     array(
       'attribute' => 'Maintainer-Name',
-      'value' => variable_get('repec_maintainer_name'),
+      'value' => $module_variables['repec_maintainer_name'],
     ),
     array(
       'attribute' => 'Maintainer-Email',
-      'value' => variable_get('repec_maintainer_email'),
+      'value' => $module_variables['repec_maintainer_email'],
     ),
     array(
       'attribute' => 'Description',
-      'value' => 'This archive collects ' . variable_get('repec_paper_name') . ' from ' . variable_get('repec_provider_name'),
+      'value' => 'This archive collects ' . $module_variables['repec_paper_name'] . ' from ' . $module_variables['repec_provider_name'],
     ),
     array(
       'attribute' => 'URL',
-      'value' => variable_get('repec_provider_homepage') . variable_get('repec_base_path') . '/' . variable_get('repec_archive_code') . '/',
+      'value' => $module_variables['repec_provider_homepage'] . $module_variables['repec_base_path'] . '/' . $module_variables['repec_archive_code'] . '/',
     ),
   );
 
