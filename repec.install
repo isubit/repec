@@ -58,14 +58,8 @@ function repec_uninstall() {
   // Variable cleanup.
   variable_del('repec_archive_code');
   variable_del('repec_base_path');
-  variable_del('repec_provider_name');
-  variable_del('repec_provider_homepage');
-  variable_del('repec_provider_institution');
-  variable_del('repec_maintainer_name');
-  variable_del('repec_maintainer_email');
-  variable_del('repec_series_name');
-  variable_del('repec_paper_dir');
-  variable_del('repec_paper_name');
+  variable_del('repec_provider');
+  variable_del('repec_maintainer');
+  variable_del('repec_series');
   variable_del('repec_check_delimiters');
-  variable_del('repec_paper_content_type');
 }
