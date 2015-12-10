@@ -274,7 +274,10 @@ function repec_get_field_content_type($content_type, $series_name, $field_series
     ->condition('field_series', $field_series)
     ->execute()
     ->fetchObject();
-  return $row->field_content_type;
+
+  if ($row) {
+    return $row->field_content_type;
+  }
 }
 
 /**

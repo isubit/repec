@@ -48,19 +48,13 @@ function repec_menu() {
   $items['admin/config/services/repec'] = array(
     'title' => 'RePEc',
     'description' => "Configure the integration with RePEc",
-    'page callback' => 'repec_create_settings_form',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('repec_settings_form'),
+    'file' => 'repec_form.inc',
     'access arguments' => array('administer site configuration'),
   );
 
   return $items;
-}
-
-/**
- * Create the settings form.
- */
-function repec_create_settings_form() {
-  module_load_include('inc', 'repec', 'repec_form');
-  return drupal_get_form('repec_settings_form');
 }
 
 /**
@@ -75,7 +69,7 @@ function repec_repec_paper_mapping($node) {
   // the field has to have the property 'visible' set to TRUE.
   $mapping = array();
 
-  $node_vars = get_object_vars($node);
+  $node_vars = ($node == NULL) ? NULL : get_object_vars($node);
   $repec_series = variable_get('repec_series');
   $content_type = $repec_series['repec_paper']['content_type'];
   $series_name = $repec_series['name'];
@@ -174,7 +168,9 @@ function repec_repec_paper_mapping($node) {
     $keywords = '';
     foreach ($node_vars[$key][LANGUAGE_NONE] as $keyword) {
       $term = taxonomy_term_load($keyword['tid']);
-      $keywords .= $term->name . ', ';
+      if ($term) {
+        $keywords .= $term->name . ', ';
+      }
     }
     if (strlen($keywords) > 0) {
       $keywords = substr($keywords, 0, strlen($keywords) - 2);
@@ -194,17 +190,19 @@ function repec_repec_paper_mapping($node) {
     );
   }
 
-  // Number or id of the Article.
-  $mapping[] = array(
-    'property' => 'Number',
-    'value' => isset($node->nid) ? $node->nid : '',
-  );
+  if ($node) {
+    // Number or id of the Article.
+    $mapping[] = array(
+      'property' => 'Number',
+      'value' => isset($node->nid) ? $node->nid : '',
+    );
 
-  // Handle that uniquely identifies the paper.
-  $mapping[] = array(
-    'property' => 'Handle',
-    'value' => 'RePEc:' . variable_get('repec_archive_code') . ':wpaper:' . $node->nid,
-  );
+    // Handle that uniquely identifies the paper.
+    $mapping[] = array(
+      'property' => 'Handle',
+      'value' => 'RePEc:' . variable_get('repec_archive_code') . ':wpaper:' . $node->nid,
+    );
+  }
 
   return $mapping;
 }

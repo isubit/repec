@@ -9,6 +9,8 @@
  * Settings Form at admin/config/services/repec.
  */
 function repec_settings_form($form, &$form_state) {
+  // Add specific css for the settings page.
+  $form['#attached']['css'][] = drupal_get_path('module', 'repec') . '/css/repec.css';
 
   $form['description_markup'] = array(
     '#type' => 'markup',
@@ -172,7 +174,7 @@ RePEc is a collaborative effort of hundreds of volunteers in 82 countries to enh
   $form['repec_series']['repec_paper']['field_association'] = array(
     '#title' => t('Field Association'),
     '#type' => 'fieldset',
-    '#description' => t($content_type . 'Please, associate fields from the selected content type to the series template. This will automatically be persisted.'),
+    '#description' => t('Please, associate fields from the selected content type to the series template. This will automatically be persisted.'),
     '#prefix' => '<div id="field_association_fieldset">',
     '#suffix' => '</div>',
     '#tree' => true,
@@ -183,32 +185,15 @@ RePEc is a collaborative effort of hundreds of volunteers in 82 countries to enh
     ),
   );
 
-  // Setting the default values of the variables.
-
-  $form_state['values']['repec_series']['name']                        = empty($form_state['values']['repec_series']['name']) ? $series['name'] : $form_state['values']['repec_series']['name'];
-  $form_state['values']['repec_series']['repec_paper']['name']         = empty($form_state['values']['repec_series']['repec_paper']['name']) ? $series['repec_paper']['name'] : $form_state['values']['repec_series']['repec_paper']['name'];
-  $form_state['values']['repec_series']['repec_paper']['content_type'] = empty($form_state['values']['repec_series']['repec_paper']['content_type']) ? $series['repec_paper']['content_type'] : $form_state['values']['repec_series']['repec_paper']['content_type'];
-
-  $content_type = $form_state['values']['repec_series']['repec_paper']['content_type'];
+  $content_type = empty($form_state['values']['repec_series']['repec_paper']['content_type']) ? $series['repec_paper']['content_type'] : $form_state['values']['repec_series']['repec_paper']['content_type'];
   if ($content_type != NULL) {
-    repec_fields_association($form, $form_state, $content_type);
+    repec_fields_association($form, $form_state, $series);
   }
 
+  $form['#submit'] = array('repec_settings_form_submit');
+  $form['#validate'] = array('repec_settings_form_validate');
   form_load_include($form_state, 'inc', 'repec', 'repec_form');
   return system_settings_form($form);
-}
- 
- 
-/**
- * Implements hook_form_alter().
- */
-function repec_form_alter(&$form, $form_state, $form_id) {
-  if ($form_id == 'repec_settings_form') {
-    // Add specific css for the settings page.
-    $form['#attached']['css'][] = drupal_get_path('module', 'repec') . '/css/repec.css';
-    array_unshift($form['#submit'], 'repec_settings_form_submit');
-    array_unshift($form['#validate'], 'repec_settings_form_validate');
-  }
 }
 
 /**
@@ -224,17 +209,17 @@ function repec_ajax_fieldset_association($form, &$form_state) {
 /**
  * This is triggered by checked content type radiobutton.
  */
-function repec_associate_fields($form_state) {
+function repec_associate_fields($form_state, $series) {
   if (!empty($form_state['triggering_element']) && $form_state['triggering_element']['#id'] == 'add_button') {
-    $content_type = $form_state['values']['repec_series']['repec_paper']['content_type'];
-    $series = $form_state['values']['repec_series']['name'];
+    $series_name = empty($form_state['values']['repec_series']['name']) ? $series['name'] : $form_state['values']['repec_series']['name'];
+    $content_type = empty($form_state['values']['repec_series']['repec_paper']['content_type']) ? $series['repec_paper']['content_type'] : $form_state['values']['repec_series']['repec_paper']['content_type'];
 
     $field_content_type = $form_state['values']['repec_series']['repec_paper']['field_association']['new_field_ct'];
     $field_series = $form_state['values']['repec_series']['repec_paper']['field_association']['new_field_series'];
 
     if ($field_content_type != 'none' && $field_series != 'none') {
       module_load_include('inc', 'repec', 'repec_aux');
-      repec_add_association($content_type, $series, $field_content_type, $field_series);
+      repec_add_association($content_type, $series_name, $field_content_type, $field_series);
     }
   }
 }
@@ -242,26 +227,28 @@ function repec_associate_fields($form_state) {
 /**
  * This function disassociates the fields.
  */
-function repec_disassociate_fields($form_state) {
+function repec_disassociate_fields($form_state, $series) {
   // This is triggered by unchecked field series
   // checkbox and content type select box.
   if (!empty($form_state['triggering_element']) && strpos($form_state['triggering_element']['#id'], 'remove_button') !== FALSE) {
-    $content_type = $form_state['values']['repec_series']['repec_paper']['content_type'];
-    $series = $form_state['values']['repec_series']['name'];
+    $series_name = empty($form_state['values']['repec_series']['name']) ? $series['name'] : $form_state['values']['repec_series']['name'];
+    $content_type = empty($form_state['values']['repec_series']['repec_paper']['content_type']) ? $series['repec_paper']['content_type'] : $form_state['values']['repec_series']['repec_paper']['content_type'];
 
     $field_series = $form_state['triggering_element']['#name'];
     module_load_include('inc', 'repec', 'repec_aux');
-    repec_delete_association($content_type, $series, NULL, $field_series);
+    repec_delete_association($content_type, $series_name, NULL, $field_series);
   }
 }
 
 /**
  * Displays the association for template - content_type fields.
  */
-function repec_fields_association(&$form, &$form_state, $content_type) {
+function repec_fields_association(&$form, &$form_state, $series) {
+  $content_type = empty($form_state['values']['repec_series']['repec_paper']['content_type']) ? $series['repec_paper']['content_type'] : $form_state['values']['repec_series']['repec_paper']['content_type'];
+  $series_name = empty($form_state['values']['repec_series']['name']) ? $series['name'] : $form_state['values']['repec_series']['name'];
 
-  repec_disassociate_fields($form_state);
-  repec_associate_fields($form_state);
+  repec_disassociate_fields($form_state, $series);
+  repec_associate_fields($form_state, $series);
 
   module_load_include('inc', 'repec', 'repec_aux');
   $ct_fields = field_info_instances('node', $content_type);
@@ -269,7 +256,6 @@ function repec_fields_association(&$form, &$form_state, $content_type) {
   $form['repec_series']['repec_paper']['field_association']['#title'] = t("Fields for !content", array('!content' => node_type_get_name($content_type)));
 
   // Fields for the Series Template.
-  $series = $form_state['values']['repec_series'];
   $series_fields = array();
 
   $mapping = module_invoke_all('repec_paper_mapping', NULL);
@@ -291,7 +277,7 @@ function repec_fields_association(&$form, &$form_state, $content_type) {
 
   $count_series = 0;
   foreach ($series_fields as $field_name => $value) {
-    $field_content_type = repec_get_field_content_type($content_type, $series['name'], $field_name);
+    $field_content_type = repec_get_field_content_type($content_type, $series_name, $field_name);
     if ($field_content_type == FALSE) {
       $available_fields_series[$field_name] = t('!value', array('!value' => $value));
     }
