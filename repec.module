@@ -8,11 +8,9 @@
 /**
  * Implements hook_node_insert().
  */
-/**
- * This function generates the template file for the node.
- */
 function repec_node_insert($node) {
   module_load_include('inc', 'repec', 'repec_aux');
+  // This function generates the template file for the node.
   // This function is called in repec_aux
   repec_generate_paper_template($node);
 }
@@ -20,23 +18,19 @@ function repec_node_insert($node) {
 /**
  * Implements hook_node_update().
  */
-/**
- * It updates the template file for the node.
- */
 function repec_node_update($node) {
   module_load_include('inc', 'repec', 'repec_aux');
   // This function is called in repec_aux
+  // It updates the template file for the node.
   repec_generate_paper_template($node);
 }
 
 /**
  * Implements hook_node_delete().
  */
-/**
- * It's not automatically removed from RePEc repository.
- */
 function repec_node_delete($node) {
   module_load_include('inc', 'repec', 'repec_aux');
+  // It's not automatically removed from RePEc repository.
   repec_remove_paper_template($node);
 }
 
@@ -59,11 +53,9 @@ function repec_menu() {
 
 /**
  * Implements hook_repec_paper_mapping().
- *
- * It maps the series fields with the node fields to generate the template file.
  */
 function repec_repec_paper_mapping($node) {
-
+  // This function maps the series fields with the node fields to generate the template file.
   // The fields displayed on the settings page come from this function.
   // To display the fields on the settings page,
   // the field has to have the property 'visible' set to TRUE.

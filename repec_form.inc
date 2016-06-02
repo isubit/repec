@@ -204,10 +204,8 @@ function repec_ajax_fieldset_association($form, &$form_state) {
 }
 
 /**
- * This function associates the fields.
- */
-/**
- * This is triggered by checked content type radiobutton.
+ * This function associates the fields. It is triggered by checked content type
+ * radio button.
  */
 function repec_associate_fields($form_state, $series) {
   if (!empty($form_state['triggering_element']) && $form_state['triggering_element']['#id'] == 'add_button') {
