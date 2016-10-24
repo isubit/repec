@@ -322,7 +322,7 @@ function repec_fields_association(&$form, &$form_state, $series) {
         '#suffix' => "</div>",
       );
 
-      if ($field_name == 'author') {
+      if ($field_name == 'Author-Name') {
         $form['repec_series']['repec_paper']['field_association']['repec_check_delimiters'] = array(
           '#type' => 'checkbox',
           '#title' => t('Check to split the field by delimiters ( and & , ; )'),
