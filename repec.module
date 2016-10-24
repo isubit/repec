@@ -146,6 +146,19 @@ function repec_repec_paper_mapping($node) {
       'value' => ucfirst($file_article->filemime),
     );
   }
+  elseif (!empty($file_url) && !empty($node_vars[$file_url][LANGUAGE_NONE][0]['url'])) {
+  $file_article = file_load($node_vars[$file_url][LANGUAGE_NONE][0]['url']);
+
+  $mapping[] = array(
+    'property' => 'File-URL',
+    'value' => $node_vars[$file_url][LANGUAGE_NONE][0]['url'],
+    'visible' => TRUE,
+  );
+  $mapping[] = array(
+    'property' => 'File-Format',
+    'value' => ucfirst($file_article->filemime),
+  );
+}
   else {
     $mapping[] = array(
       'property' => 'File-URL',
