@@ -119,7 +119,7 @@ function repec_repec_paper_mapping($node) {
   if (!empty($create_date) && !empty($node_vars[$create_date][LANGUAGE_NONE][0]['value'])) {
     $mapping[] = array(
       'property' => 'Creation-Date',
-      'value' => $node_vars[$create_date][LANGUAGE_NONE][0]['value'],
+      'value' => strftime("%Y-%m-%d", strtotime($node_vars[$create_date][LANGUAGE_NONE][0]['value'])),
       'visible' => TRUE,
     );
   }
