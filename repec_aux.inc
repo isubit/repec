@@ -172,10 +172,10 @@ function repec_generate_array_authors($authors_names) {
   // Break by and.
   $check_delimiters = variable_get('repec_check_delimiters', 1);
   if (empty($check_delimiters) || $check_delimiters == 0) {
-    return array($authors_names);
+    return $authors_names;
   }
 
-  $authors_temp = explode(" and ", $authors_names);
+  $authors_temp = explode(" and ", $authors_names[0]['value']);
 
   // Break by &.
   $authors = array();
