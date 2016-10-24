@@ -78,13 +78,13 @@ function repec_repec_paper_mapping($node) {
   );
 
   $author_field = repec_get_field_content_type($content_type, $series_name, 'Author-Name');
-  if (!empty($author_field) && !empty($node_vars[$author_field][LANGUAGE_NONE][0]['value'])) {
-    $authors = repec_generate_array_authors($node_vars[$author_field][LANGUAGE_NONE][0]['value']);
+  if (!empty($author_field) && !empty($node_vars[$author_field][LANGUAGE_NONE])) {
+    $authors = repec_generate_array_authors($node_vars[$author_field][LANGUAGE_NONE]);
 
     foreach ($authors as $author) {
       $mapping[] = array(
         'property' => 'Author-Name',
-        'value' => $author,
+        'value' => $author['value'],
         'visible' => TRUE,
       );
     }
