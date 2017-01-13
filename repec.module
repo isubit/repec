@@ -182,18 +182,48 @@ function repec_repec_paper_mapping($node) {
     );
   }
 
-  if ($node) {
-    // Number or id of the Article.
+  // Article ID
+  $article_id = repec_get_field_content_type($content_type, $series_name, 'Number');
+  if (!empty($article_id) && !empty($node_vars[$article_id][LANGUAGE_NONE][0]['value'])) {
+    $article_id = '';
     $mapping[] = array(
       'property' => 'Number',
-      'value' => isset($node->nid) ? $node->nid : '',
+      'value' => $node_vars[$article_id][LANGUAGE_NONE][0]['value'],
+      'visible' => TRUE,
     );
-
     // Handle that uniquely identifies the paper.
     $mapping[] = array(
       'property' => 'Handle',
-      'value' => 'RePEc:' . variable_get('repec_archive_code') . ':wpaper:' . $node->nid,
+      'value' => 'RePEc:' . variable_get('repec_archive_code') . ":" . variable_get('repec_paper_dir', 'wpaper') . ":" . $node_vars[$article_id][LANGUAGE_NONE][0]['value'],
     );
+  }
+  else {
+      // Number or id of the Article.
+      $mapping[] = array(
+        'property' => 'Number',
+        'value' => '',
+        'visible' => TRUE,
+      );
+      // Handle that uniquely identifies the paper.
+      $mapping[] = array(
+        'property' => 'Handle',
+        'value' => 'RePEc:' . variable_get('repec_archive_code') . ':wpaper:' . $node->nid,
+      );
+/*
+    if ($node) {
+      // Number or id of the Article.
+      $mapping[] = array(
+        'property' => 'Number',
+        'value' => isset($node->nid) ? $node->nid : '',
+        'visible' => TRUE,
+      );
+      // Handle that uniquely identifies the paper.
+      $mapping[] = array(
+        'property' => 'Handle',
+        'value' => 'RePEc:' . variable_get('repec_archive_code') . ':wpaper:' . $node->nid,
+      );
+    }
+    */
   }
 
   return $mapping;
