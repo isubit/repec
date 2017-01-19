@@ -198,7 +198,6 @@ function repec_repec_paper_mapping($node) {
   // Article ID
   $article_id = repec_get_field_content_type($content_type, $series_name, 'Number');
   if (!empty($article_id) && !empty($node_vars[$article_id][LANGUAGE_NONE][0]['value'])) {
-    $article_id = '';
     $mapping[] = array(
       'property' => 'Number',
       'value' => $node_vars[$article_id][LANGUAGE_NONE][0]['value'],
