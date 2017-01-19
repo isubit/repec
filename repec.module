@@ -207,7 +207,7 @@ function repec_repec_paper_mapping($node) {
       // Handle that uniquely identifies the paper.
       $mapping[] = array(
         'property' => 'Handle',
-        'value' => 'RePEc:' . variable_get('repec_archive_code') . ':wpaper:' . $node->nid,
+        'value' => 'RePEc:' . variable_get('repec_archive_code') . ":" . variable_get('repec_paper_dir', 'wpaper') . ":" . $node->nid,
       );
   }
 
