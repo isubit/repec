@@ -273,7 +273,7 @@ function repec_repec_series_mapping() {
     ),
     array(
       'attribute' => 'Handle',
-      'value' => 'RePEc:' . variable_get('repec_archive_code') . ':wpaper',
+      'value' => 'RePEc:' . variable_get('repec_archive_code') . ':' . variable_get('repec_paper_dir', 'wpaper'),
     ),
   );
 
