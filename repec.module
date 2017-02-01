@@ -319,7 +319,7 @@ function repec_repec_archive_mapping() {
     ),
     array(
       'attribute' => 'URL',
-      'value' => $provider['homepage'] . variable_get('repec_base_path') . '/' . variable_get('repec_archive_code') . '/',
+      'value' => $provider['homepage'] . '/' . variable_get('repec_base_path') . '/' . variable_get('repec_archive_code') . '/',
     ),
   );
 
